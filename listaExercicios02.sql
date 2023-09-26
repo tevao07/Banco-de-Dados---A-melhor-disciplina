@@ -78,3 +78,51 @@ BEGIN
 
 DELIMITER ;
 
+6. Extração de Títulos por Categoria (Usando Cursor):
+
+sql
+DELIMITER //
+
+CREATE PROCEDURE sp_TitulosPorCategoria(IN categoriaNome VARCHAR(100))
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE livroTitulo VARCHAR(255);
+    DECLARE cur CURSOR FOR
+        SELECT Livro.Titulo
+        FROM Livro
+        INNER JOIN Categoria ON Livro.Categoria_ID = Categoria.Categoria_ID
+        WHERE Categoria.Nome = categoriaNome;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO livroTitulo;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        SELECT livroTitulo;
+    END LOOP;
+    CLOSE cur;
+
+
+DELIMITER ;
+
+7. Adição de Livro com Tratamento de Erros:
+
+sql
+DELIMITER //
+
+CREATE PROCEDURE sp_AdicionarLivro(IN titulo VARCHAR(255), IN editoraID INT, IN anoPublicacao INT, IN numPaginas INT, IN categoriaID INT, OUT mensagem VARCHAR(255))
+BEGIN
+    DECLARE EXIT HANDLER FOR 1062
+    BEGIN
+        SET mensagem = 'Erro: Título de livro já existe.';
+    END;
+
+    INSERT INTO Livro (Titulo, Editora_ID, Ano_Publicacao, Numero_Paginas, Categoria_ID)
+    VALUES (titulo, editoraID, anoPublicacao, numPaginas, categoriaID);
+
+    SET mensagem = 'Livro adicionado com sucesso.';
+
+
+DELIMITER ;
