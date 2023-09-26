@@ -141,3 +141,18 @@ BEGIN
 
 DELIMITER ;
 
+sql
+-- Descrição da stored procedure
+-- Autor: Seu Nome
+-- Data: Data de Criação
+-- Descrição: Esta stored procedure faz o seguinte...
+
+DELIMITER //
+
+CREATE PROCEDURE sp_SuaProcedure(IN parametro1 TIPO, OUT parametro2 TIPO)
+BEGIN
+    -- Comentários adicionados para explicar o funcionamento do código SQL
+    -- ...
+
+
+DELIMITER 
